@@ -1,0 +1,57 @@
+# Multi-Currency Travel Budget Analysis
+
+expenses = []
+n = int(input("Enter number of expense categories: "))
+budget = float(input("Enter total travel budget in INR: "))
+conversion_fee = float(input("Enter conversion fee percentage: "))
+
+if n <= 0 or budget < 0 or not 0 <= conversion_fee <= 100:
+    print("Invalid input!")
+else:
+    for i in range(n):
+        print(f"\nExpense Category {i + 1}")
+        category = input("Enter category: ")
+        amount = float(input("Enter expense amount in foreign currency: "))
+        rate = float(input("Enter INR exchange rate per foreign currency unit: "))
+
+        if amount < 0 or rate <= 0:
+            print("Invalid amount or exchange rate. Skipping category.")
+            continue
+
+        converted = amount * rate
+        fee = converted * conversion_fee / 100
+        total = converted + fee
+
+        expenses.append({
+            "category": category,
+            "amount": amount,
+            "rate": rate,
+            "converted": converted,
+            "fee": fee,
+            "total": total
+        })
+
+    total_spending = sum(e["total"] for e in expenses)
+
+    print("\n--- Travel Expense Report ---")
+
+    for e in expenses:
+        print(f"\nCategory: {e['category']}")
+        print(f"Foreign Currency Amount: {e['amount']:.2f}")
+        print(f"Converted Amount: Rs. {e['converted']:.2f}")
+        print(f"Conversion Fee: Rs. {e['fee']:.2f}")
+        print(f"Total Expense: Rs. {e['total']:.2f}")
+
+    print(f"\nTotal Spending: Rs. {total_spending:.2f}")
+    print(f"Travel Budget: Rs. {budget:.2f}")
+    print(f"Remaining Budget: Rs. {budget - total_spending:.2f}")
+
+    if total_spending > budget:
+        print("Result: Budget exceeded.")
+    else:
+        print("Result: Within budget.")
+
+    if expenses:
+        largest = max(expenses, key=lambda e: e["total"])
+        print("Largest Expense Category:", largest["category"])
+        print(f"Largest Expense: Rs. {largest['total']:.2f}")
