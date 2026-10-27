@@ -1,0 +1,80 @@
+# Hospital Billing and Patient Classification System
+
+patients = []
+
+n = int(input("Enter number of patients: "))
+
+for i in range(n):
+    print("\nEnter details for Patient", i + 1)
+
+    patient_id = input("Patient ID: ")
+    name = input("Patient Name: ")
+    age = int(input("Age: "))
+
+    consultation = float(input("Consultation Charges: Rs. "))
+    diagnostic = float(input("Diagnostic Charges: Rs. "))
+    treatment = float(input("Treatment Charges: Rs. "))
+
+    insurance = input("Has insurance? (yes/no): ").lower()
+    senior_citizen = age >= 60
+
+    if age < 0 or consultation < 0 or diagnostic < 0 or treatment < 0:
+        print("Invalid patient details or charges.")
+        continue
+
+    total = consultation + diagnostic + treatment
+
+    concession = 0
+
+    if senior_citizen:
+        concession += total * 0.10
+
+    if total >= 10000:
+        concession += total * 0.05
+
+    net_bill = total - concession
+
+    if insurance == "yes":
+        payment_policy = "Insurance Patient"
+    elif net_bill >= 15000:
+        payment_policy = "High Payment Category"
+    elif net_bill >= 5000:
+        payment_policy = "Medium Payment Category"
+    else:
+        payment_policy = "Low Payment Category"
+
+    patients.append({
+        "id": patient_id,
+        "name": name,
+        "total": total,
+        "concession": concession,
+        "net_bill": net_bill,
+        "category": payment_policy
+    })
+
+    print("\n--- Patient Bill ---")
+    print("Patient ID:", patient_id)
+    print("Patient Name:", name)
+    print(f"Consultation Charges: Rs. {consultation:.2f}")
+    print(f"Diagnostic Charges: Rs. {diagnostic:.2f}")
+    print(f"Treatment Charges: Rs. {treatment:.2f}")
+    print(f"Total Charges: Rs. {total:.2f}")
+    print(f"Concession: Rs. {concession:.2f}")
+    print(f"Net Bill: Rs. {net_bill:.2f}")
+    print("Patient Classification:", payment_policy)
+
+print("\n--- Hospital Billing Summary ---")
+
+for patient in patients:
+    print(
+        patient["id"],
+        patient["name"],
+        f"Net Bill: Rs. {patient['net_bill']:.2f}",
+        "| Category:", patient["category"]
+    )
+
+print("\nTotal Patients Processed:", len(patients))
+print(
+    "Total Hospital Revenue: Rs. "
+    f"{sum(p['net_bill'] for p in patients):.2f}"
+)
