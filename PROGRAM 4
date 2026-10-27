@@ -1,0 +1,91 @@
+# Employee Payroll and Deduction Analysis
+
+employees = []
+
+n = int(input("Enter number of employees: "))
+
+for i in range(n):
+    print("\nEnter details for Employee", i + 1)
+
+    emp_id = input("Employee ID: ")
+    name = input("Employee Name: ")
+    basic = float(input("Basic Salary: Rs. "))
+    allowances = float(input("Allowances: Rs. "))
+    overtime_hours = float(input("Overtime Hours: "))
+    overtime_rate = float(input("Overtime Rate per Hour: Rs. "))
+    incentives = float(input("Incentives: Rs. "))
+
+    if (basic < 0 or allowances < 0 or overtime_hours < 0
+            or overtime_rate < 0 or incentives < 0):
+        print("Invalid input! Salary values cannot be negative.")
+        continue
+
+    overtime_pay = overtime_hours * overtime_rate
+    gross_salary = basic + allowances + overtime_pay + incentives
+
+    # Progressive deductions
+    if gross_salary <= 20000:
+        deduction = gross_salary * 0.05
+    elif gross_salary <= 50000:
+        deduction = 20000 * 0.05 + (gross_salary - 20000) * 0.10
+    else:
+        deduction = (
+            20000 * 0.05
+            + 30000 * 0.10
+            + (gross_salary - 50000) * 0.20
+        )
+
+    net_salary = gross_salary - deduction
+
+    employees.append({
+        "id": emp_id,
+        "name": name,
+        "basic": basic,
+        "allowances": allowances,
+        "overtime": overtime_pay,
+        "incentives": incentives,
+        "gross": gross_salary,
+        "deduction": deduction,
+        "net": net_salary
+    })
+
+    print("\n" + "=" * 45)
+    print("          EMPLOYEE SALARY STATEMENT")
+    print("=" * 45)
+    print(f"Employee ID       : {emp_id}")
+    print(f"Employee Name     : {name}")
+    print("-" * 45)
+    print(f"Basic Salary      : Rs. {basic:.2f}")
+    print(f"Allowances        : Rs. {allowances:.2f}")
+    print(f"Overtime Pay      : Rs. {overtime_pay:.2f}")
+    print(f"Incentives        : Rs. {incentives:.2f}")
+    print("-" * 45)
+    print(f"Gross Salary      : Rs. {gross_salary:.2f}")
+    print(f"Total Deductions  : Rs. {deduction:.2f}")
+    print(f"Net Salary        : Rs. {net_salary:.2f}")
+    print("=" * 45)
+
+print("\n========== PAYROLL SUMMARY ==========")
+print(f"{'ID':<10}{'Name':<20}{'Net Salary':>15}")
+print("-" * 45)
+
+for emp in employees:
+    print(
+        f"{emp['id']:<10}{emp['name']:<20}"
+        f"{emp['net']:>15.2f}"
+    )
+
+print("-" * 45)
+print("Total Employees Processed:", len(employees))
+print(
+    f"Total Gross Payroll: Rs. "
+    f"{sum(e['gross'] for e in employees):.2f}"
+)
+print(
+    f"Total Deductions: Rs. "
+    f"{sum(e['deduction'] for e in employees):.2f}"
+)
+print(
+    f"Total Net Payroll: Rs. "
+    f"{sum(e['net'] for e in employees):.2f}"
+)
