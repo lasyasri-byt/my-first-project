@@ -1,0 +1,66 @@
+students = []
+n = int(input("Enter number of students: "))
+seats = int(input("Enter available scholarship seats: "))
+
+min_aggregate = 75
+min_subject = 40
+min_attendance = 75
+income_limit = 250000
+
+for i in range(n):
+    print("\nEnter details for student", i + 1)
+
+    sid = input("Student ID: ")
+    name = input("Student name: ")
+
+    subjects = int(input("Number of subjects: "))
+    marks = []
+
+    for j in range(subjects):
+        mark = float(input(f"Subject {j + 1} marks: "))
+        marks.append(mark)
+
+    attendance = float(input("Attendance percentage: "))
+    income = float(input("Annual family income: "))
+
+    aggregate = sum(marks) / len(marks)
+
+    if (aggregate >= min_aggregate
+            and all(m >= min_subject for m in marks)
+            and attendance >= min_attendance
+            and income <= income_limit):
+
+        students.append({
+            "id": sid,
+            "name": name,
+            "aggregate": aggregate,
+            "attendance": attendance,
+            "income": income
+        })
+
+# Rank by aggregate, attendance, and income
+students.sort(
+    key=lambda s: (
+        -s["aggregate"],
+        -s["attendance"],
+        s["income"]
+    )
+)
+
+print("\n--- Eligible Students Ranking ---")
+
+for rank, student in enumerate(students, start=1):
+    print(
+        rank, student["id"], student["name"],
+        f"Marks: {student['aggregate']:.2f}%",
+        f"Attendance: {student['attendance']}%",
+        f"Income: Rs.{student['income']:.0f}"
+    )
+
+print("\n--- Scholarship Awardees ---")
+
+for student in students[:max(0, seats)]:
+    print(student["id"], "-", student["name"])
+
+print("\nTotal eligible students:", len(students))
+print("Scholarships awarded:", min(len(students), max(0, seats)))
